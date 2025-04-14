@@ -19,7 +19,7 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         new Handler().postDelayed(() -> {
-            startActivity(new Intent(SplashScreen.this, NewContact.class));
+            startActivity(new Intent(SplashScreen.this, MainActivity.class));
             finish();
         }, 2000); // 2-second splash
 

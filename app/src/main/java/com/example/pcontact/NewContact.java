@@ -1,5 +1,6 @@
 package com.example.pcontact;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -56,6 +57,7 @@ public class NewContact extends AppCompatActivity {
                     edtEmail.setText("");
                     edtPhone.setText("");
 
+                    startActivity(new Intent(NewContact.this, MainActivity.class));
                 }
                 else{
                     Toast.makeText(NewContact.this, "Failed to Add New Contact", Toast.LENGTH_SHORT).show();
