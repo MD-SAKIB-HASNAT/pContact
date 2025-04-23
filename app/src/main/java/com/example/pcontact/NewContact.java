@@ -18,6 +18,7 @@ public class NewContact extends AppCompatActivity {
     EditText edtName,edtEmail,edtPhone;
     Button btnAdd;
     int conID;
+    String oldNmae="",oldEmial="",oldPhone="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,16 +30,21 @@ public class NewContact extends AppCompatActivity {
         edtPhone = findViewById(R.id.edt_phone);
         btnAdd = findViewById(R.id.btn_add);
 
+        ContactCrud contactCrud = new ContactCrud(NewContact.this);
+
         Intent i =getIntent();
         conID = i.getIntExtra("con_id",-1);
 
+
         if(conID!=-1){
-            ContactCrud cr = new ContactCrud(NewContact.this);
-            AllContact ac = cr.readContact(conID);
+            AllContact ac = contactCrud.readContact(conID);
             edtName.setText(ac.getcName());
             edtEmail.setText(ac.getcEmail());
             edtPhone.setText(ac.getcPhone());
             btnAdd.setText("Click for Update");
+            oldNmae = edtName.getText().toString();
+            oldEmial = edtEmail.getText().toString();
+            oldPhone = edtPhone.getText().toString();
 
         }
 
@@ -47,7 +53,7 @@ public class NewContact extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String name, email, phone;
-                name = edtName.getText().toString().trim();
+                name = edtName.getText().toString();
                 email = edtEmail.getText().toString();
                 phone = edtPhone.getText().toString();
 
@@ -64,9 +70,30 @@ public class NewContact extends AppCompatActivity {
                     return;
                 }
 
-                ContactCrud contactCrud = new ContactCrud(NewContact.this);
+
+
                 if (btnAdd.getText() == "Click for Update") {
                     AllContact ac = new AllContact(name,conID,phone,email);
+
+                    if(!oldNmae.equals(name)){
+                        if (isDuplicateName(name)){
+                            edtName.setError("Another "+name+" is in your contact");
+                            return;
+                        }
+                    }
+                    if(!oldPhone.equals(phone)){
+                        if(isDuplicatePhone(phone)){
+                            edtPhone.setError("Another "+phone+" is in your contact");
+                            return;
+                        }
+                    }
+                    if(!oldEmial.equals(email)){
+                        if(isDuplicateEmail(email)) {
+                            edtEmail.setError("Another "+email+" is in your contact");
+                            return;
+                        }
+                    }
+
                     if (contactCrud.updateContact(ac) != -1) {
                         Toast.makeText(NewContact.this, "Update Contact Successfully", Toast.LENGTH_SHORT).show();
                         edtName.setText("");
@@ -79,6 +106,19 @@ public class NewContact extends AppCompatActivity {
                     }
 
                 } else {
+
+                    if (isDuplicateName(name)){
+                        edtName.setError("Another "+name+" is in your contact");
+                        return;
+                    }
+                    if(isDuplicatePhone(phone)){
+                        edtPhone.setError("Another "+phone+" is in your contact");
+                        return;
+                    }
+                    if(isDuplicateEmail(email)) {
+                        edtEmail.setError("Another "+email+" is in your contact");
+                        return;
+                    }
 
                     if (contactCrud.insertContact(name, email, phone) != -1) {
                         Toast.makeText(NewContact.this, "New Contact Added Successfully", Toast.LENGTH_SHORT).show();
@@ -104,8 +144,22 @@ public class NewContact extends AppCompatActivity {
         private boolean isValidPhone(String phone) {
             return phone.matches("^\\d{11}$");
         }
+        private boolean isDuplicateName(String name) {
+             return  contactCrud.readContactbyName(name);
+        }
+        private boolean isDuplicatePhone(String phone) {
+            return  contactCrud.readContactbyPhone(phone);
+        }
+        private boolean isDuplicateEmail(String email) {
+            return  contactCrud.readContactbyEmail(email);
+        }
+
         });
 
-
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
     }
 }

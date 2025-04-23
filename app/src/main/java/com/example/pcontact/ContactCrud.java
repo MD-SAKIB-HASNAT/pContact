@@ -69,6 +69,49 @@ public class ContactCrud extends DBhelper{
         db.close();
         return allContact;
     }
+    public boolean readContactbyName(String pname){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("contact",null,"name = ?", new String[]{pname} ,null,null,null);
+        String newName="";
+        while (cursor.moveToNext()){
+            @SuppressLint("Range") String name = cursor.getString(cursor.getColumnIndex(COL_Name));
+            newName = name;
+        }
+        cursor.close();
+
+        db.close();
+        if(newName.equals(pname)) return true;
+        else return false;
+    }
+    public boolean readContactbyEmail(String pemail){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("contact",null,"email = ?", new String[]{pemail} ,null,null,null);
+        String newEmail="";
+        while (cursor.moveToNext()){
+            @SuppressLint("Range") String email = cursor.getString(cursor.getColumnIndex(COL_Email));
+            newEmail = email;
+        }
+        cursor.close();
+
+        db.close();
+        if(newEmail.equals(pemail)) return true;
+        else return false;
+    }
+
+    public boolean readContactbyPhone(String pphone){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("contact",null,"name = ?", new String[]{pphone} ,null,null,null);
+        String newPhone="";
+        while (cursor.moveToNext()){
+            @SuppressLint("Range") String phone = cursor.getString(cursor.getColumnIndex(COL_phone));
+            newPhone = phone;
+        }
+        cursor.close();
+
+        db.close();
+        if(newPhone.equals(pphone)) return true;
+        else return false;
+    }
     public long updateContact(AllContact ac){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -83,5 +126,10 @@ public class ContactCrud extends DBhelper{
         return result;
     }
 
-
+    public long deleteContact(int id){
+        SQLiteDatabase db = getWritableDatabase();
+        long result = db.delete(TAB_Contact,"id = ?",new String[]{id+""});
+        db.close();
+        return result;
+    }
 }

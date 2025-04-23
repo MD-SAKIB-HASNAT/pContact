@@ -21,9 +21,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     ArrayList<AllContact> allContacts = new ArrayList<>();
     Context mContext;
 
-    public ContactAdapter(ArrayList<AllContact> allContacts, Context mContext) {
+    OnItemLongClickListener longClickListener;
+
+    // Constructor updated to accept OnItemLongClickListener
+    public ContactAdapter(ArrayList<AllContact> allContacts, Context mContext, OnItemLongClickListener longClickListener) {
         this.allContacts = allContacts;
         this.mContext = mContext;
+        this.longClickListener = longClickListener;
     }
 
 
@@ -50,6 +54,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                 //Log.e("sakib",ac.getId()+"");
                 mContext.startActivity(i);
             }
+        });
+
+        // Long-click listener added here
+        holder.itemView.setOnLongClickListener(v -> {
+            longClickListener.onItemLongClick(ac.getId()); // Trigger long click
+            return true; // Indicate that the long click was handled
         });
     }
 
