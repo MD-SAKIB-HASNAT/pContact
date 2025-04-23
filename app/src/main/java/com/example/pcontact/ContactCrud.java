@@ -28,6 +28,7 @@ public class ContactCrud extends DBhelper{
         db.close();
         return result;
     }
+
     public ArrayList<AllContact> readContacts(){
         ArrayList<AllContact> allContacts= new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -48,4 +49,39 @@ public class ContactCrud extends DBhelper{
         db.close();
         return allContacts;
     }
+
+    public AllContact readContact( int id ){
+        AllContact allContact = new AllContact();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("contact",null,"id = ?", new String[]{id+""} ,null,null,null);
+
+        while (cursor.moveToNext()){
+            //@SuppressLint("Range") int id = cursor.getInt(cursor.getColumnIndex(COL_Id));
+            @SuppressLint("Range") String name = cursor.getString(cursor.getColumnIndex(COL_Name));
+            @SuppressLint("Range") String email = cursor.getString(cursor.getColumnIndex(COL_Email));
+            @SuppressLint("Range") String phone = cursor.getString(cursor.getColumnIndex(COL_phone));
+
+            allContact = new AllContact(name,id,phone,email);
+
+        }
+        cursor.close();
+
+        db.close();
+        return allContact;
+    }
+    public long updateContact(AllContact ac){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COL_Id,ac.getId());
+        cv.put(COL_Name, ac.getcName());
+        cv.put(COL_Email,ac.getcEmail());
+        cv.put(COL_phone,ac.getcPhone());
+
+        long result=  db.update(TAB_Contact,cv,"id = ?",new String[]{ac.getId()+""});
+
+        db.close();
+        return result;
+    }
+
+
 }

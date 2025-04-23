@@ -1,8 +1,12 @@
 package com.example.pcontact;
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,10 +19,14 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
 
     ArrayList<AllContact> allContacts = new ArrayList<>();
+    Context mContext;
 
-    public ContactAdapter(ArrayList<AllContact> allContacts) {
-        this.allContacts=allContacts;
+    public ContactAdapter(ArrayList<AllContact> allContacts, Context mContext) {
+        this.allContacts = allContacts;
+        this.mContext = mContext;
     }
+
+
 
 
     @NonNull
@@ -33,6 +41,16 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         holder.txtName.setText(allContacts.get(position).getcName());
         holder.txtEmail.setText(allContacts.get(position).getcEmail());
         holder.txtPhone.setText(allContacts.get(position).getcPhone());
+        AllContact ac = allContacts.get(position);
+        holder.btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(mContext, NewContact.class);
+                i.putExtra("con_id", ac.getId());
+                //Log.e("sakib",ac.getId()+"");
+                mContext.startActivity(i);
+            }
+        });
     }
 
     @Override
@@ -42,11 +60,16 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
     public class ContactViewHolder extends RecyclerView.ViewHolder {
         TextView txtName,txtEmail,txtPhone;
+        ImageView btnUpdate;
         public ContactViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.item_name);
             txtEmail = itemView.findViewById(R.id.item_email);
             txtPhone = itemView.findViewById(R.id.item_phone);
+            btnUpdate = itemView.findViewById(R.id.btn_update);
+
+
+
         }
     }
 }

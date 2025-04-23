@@ -18,17 +18,18 @@ public class DBhelper extends SQLiteOpenHelper {
 
 
     public DBhelper(@Nullable Context context) {
-        super(context, DB_Name, null , 1);
+        super(context, DB_Name, null , 2);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("Create table if not exists contact(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT, phone TEXT )");
+        sqLiteDatabase.execSQL("Create table if not exists contact(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, email TEXT, phone TEXT )");
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS contact");  // Or ALTER TABLE if needed
+        onCreate(sqLiteDatabase);
     }
 }

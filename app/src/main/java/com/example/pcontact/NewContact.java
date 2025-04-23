@@ -17,6 +17,7 @@ public class NewContact extends AppCompatActivity {
 
     EditText edtName,edtEmail,edtPhone;
     Button btnAdd;
+    int conID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +29,24 @@ public class NewContact extends AppCompatActivity {
         edtPhone = findViewById(R.id.edt_phone);
         btnAdd = findViewById(R.id.btn_add);
 
+        Intent i =getIntent();
+        conID = i.getIntExtra("con_id",-1);
+
+        if(conID!=-1){
+            ContactCrud cr = new ContactCrud(NewContact.this);
+            AllContact ac = cr.readContact(conID);
+            edtName.setText(ac.getcName());
+            edtEmail.setText(ac.getcEmail());
+            edtPhone.setText(ac.getcPhone());
+            btnAdd.setText("Click for Update");
+
+        }
+
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String name,email,phone;
+                String name, email, phone;
                 name = edtName.getText().toString().trim();
                 email = edtEmail.getText().toString();
                 phone = edtPhone.getText().toString();
@@ -51,18 +65,33 @@ public class NewContact extends AppCompatActivity {
                 }
 
                 ContactCrud contactCrud = new ContactCrud(NewContact.this);
-                if(contactCrud.insertContact(name,email,phone)!=-1){
-                    Toast.makeText(NewContact.this, "New Contact Added Successfully", Toast.LENGTH_SHORT).show();
-                    edtName.setText("");
-                    edtEmail.setText("");
-                    edtPhone.setText("");
+                if (btnAdd.getText() == "Click for Update") {
+                    AllContact ac = new AllContact(name,conID,phone,email);
+                    if (contactCrud.updateContact(ac) != -1) {
+                        Toast.makeText(NewContact.this, "Update Contact Successfully", Toast.LENGTH_SHORT).show();
+                        edtName.setText("");
+                        edtEmail.setText("");
+                        edtPhone.setText("");
 
-                    startActivity(new Intent(NewContact.this, MainActivity.class));
-                }
-                else{
-                    Toast.makeText(NewContact.this, "Failed to Add New Contact", Toast.LENGTH_SHORT).show();
-                }
+                        startActivity(new Intent(NewContact.this, MainActivity.class));
+                    } else {
+                        Toast.makeText(NewContact.this, "Failed to Upddate Contact", Toast.LENGTH_SHORT).show();
+                    }
 
+                } else {
+
+                    if (contactCrud.insertContact(name, email, phone) != -1) {
+                        Toast.makeText(NewContact.this, "New Contact Added Successfully", Toast.LENGTH_SHORT).show();
+                        edtName.setText("");
+                        edtEmail.setText("");
+                        edtPhone.setText("");
+
+                        startActivity(new Intent(NewContact.this, MainActivity.class));
+                    } else {
+                        Toast.makeText(NewContact.this, "Failed to Add New Contact", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
             }
         private boolean isValidName(String name) {
             return name.matches("^[a-zA-Z\\s]{2,}$");

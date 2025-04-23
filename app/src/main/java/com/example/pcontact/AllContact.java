@@ -4,6 +4,9 @@ public class AllContact{
     String cName,cEmail,cPhone;
     int id;
 
+    public AllContact() {
+    }
+
     public AllContact(String cName, int id, String cPhone, String cEmail) {
         this.cName = cName;
         this.id = id;

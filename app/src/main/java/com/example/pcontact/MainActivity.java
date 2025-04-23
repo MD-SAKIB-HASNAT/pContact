@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,10 +37,12 @@ public class MainActivity extends AppCompatActivity {
         ContactCrud cr = new ContactCrud(MainActivity.this);
         allContacts = cr.readContacts();
 
-        ContactAdapter adapter = new ContactAdapter(allContacts);
+        ContactAdapter adapter = new ContactAdapter(allContacts,MainActivity.this);
         recView = findViewById(R.id.rec_view);
         recView.setLayoutManager(new LinearLayoutManager(this));
         recView.setAdapter(adapter);
+
+
 
     }
 }
